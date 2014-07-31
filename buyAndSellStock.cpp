@@ -14,31 +14,40 @@ public:
 	}
     int maxProfit(vector<int> &prices) {
 		int lenPrices = prices.size();
-        int *minPrices = new int(lenPrices);
-		int *maxPrices = new int(lenPrices);
-		int result = 0;
-		minPrices[0] = prices.at(0);
-		maxPrices[0] = prices.at(0);
+		if(lenPrices == 0) return 0;
+ 	   	int minPrice = prices.at(0),maxPrice = prices.at(lenPrices-1);
+		int result = 0,maxProfit = 0;
+		vector<int> *firstProfit = new vector<int>(lenPrices);
+		firstProfit -> at(0) = 0;
 		for(int i = 1;i < lenPrices; i++) {
-			int priceItem = prices.at(i);
-			minPrices[i] = getMinNumber(priceItem, minPrices[i-1]);
-			maxPrices[i] = getMaxNumber(priceItem, maxPrices[i-1]);
+			int currentPrice = prices.at(i);
+			printf("%d ", currentPrice);
+			result = getMaxNumber(currentPrice - minPrice, result);
+			minPrice = getMinNumber(minPrice, currentPrice);
+			firstProfit -> at(i) = result; 
 		}
-		for(int i = 1;i < lenPrices; i++) {
-			result = getMaxNumber(maxPrices[i] - minPrices[i], result);
+		maxProfit = result;
+		for(int i=0;i<lenPrices;i++) {
+			printf("%d ", firstProfit -> at(i));
 		}
-		delete minPrices;
-		delete maxPrices;
-		return result;
+		printf("\n");
+		result = 0;
+		for(int i = lenPrices -2;i > 0; i--) { 
+			int currentPrice = prices.at(i);
+			result = getMaxNumber(maxPrice - currentPrice, result);
+			maxPrice = getMaxNumber(maxPrice, currentPrice);
+			maxProfit = getMaxNumber(maxProfit,result + firstProfit -> at(i-1));
+			printf("maxProfit == %d", maxProfit);
+		}
+		cout<<endl;
+		return maxProfit;
     }
 };
 
 int main()
 {
-	vector<int> myvector (10);
-	for (unsigned i=0; i<myvector.size(); i++) {
-	    myvector.at(i)=i;
-	}
+	int myarray[5] = {2,1,2,0,1};  
+	vector<int> myvector(myarray , myarray+5); 
 	Solution *solution = new Solution();
 	printf("result == %d\n", solution ->maxProfit(myvector));
 	return 0;
